@@ -1,0 +1,16 @@
+p1 <- readTrees
+p1 <- readTrees("arbol_2-.nwk")[[1]]
+p1 <- readTrees("arbol_2-.nwk")[1]
+p1 <- readTrees("arbol_20.nwk")[1]
+p1.TreeLen()
+p1.treeLength()
+p2 <- readTrees("arbol_50.nwk")[1]
+p2.Tree.Length()
+p2.treeLength()
+p3 <- readTrees("arbol_100.nwk")[1]
+p3.treeLength()
+p4 <- readTrees("arbol_200.nwk")[1]
+p4.treeLength()
+p5 <- readTrees("arbol_400.nwk")[1]
+p5.treeLength()
+q()

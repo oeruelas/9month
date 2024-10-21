@@ -1,0 +1,94 @@
+
+  # Generate data with Moran model: 
+  
+  n_sites <- 1
+  n_samples <- 100
+  
+  
+  # set up moves and monitors 
+  
+  moves    = VectorMoves()
+  
+  monitors = VectorMonitors()
+  
+  
+  
+  # population size
+  
+  N <- 4
+  
+  
+  # base frequencies
+  
+  pi_prior <- [0.5, 0.5]
+  
+  pi <- Simplex(pi_prior)
+  
+  # exchangebilities
+  rho <- [0.1]
+  
+  #mu := [pi[2]*rho[1], pi[1]*rho[1], pi[3]*rho[2], pi[1]*rho[2], pi[4]*rho[3], pi[1]*rho[3], pi[3]*rho[4], pi[2]*rho[4], pi[4]*rho[5], pi[2]*rho[5], pi[4]*rho[6], pi[3]*rho[6]]
+  mu := [pi[1]*rho[1], pi[2]*rho[1]]
+  
+  sigma <- 0.0
+  phi := [1.0,1.0]
+  
+  # balancing selection
+  
+  
+  # balanced frequencies
+  
+  
+  # rate matrix
+  
+  
+  Q := fnPoMo2N(N, mu, phi)
+  
+  #tree fixed
+  
+  psi <- readTrees("data/arbol_200.nwk")[1]
+  
+  
+  
+  # root
+  
+  root1 <- rep(0.0,25)
+  
+  root1[1] <- 1.0
+  root1[2] <- 1.0
+  
+  root <- simplex( root1 )
+  
+  
+  # data
+  
+  sequences ~ dnPhyloCTMC(tree=psi, Q=Q,rootFrequencies=root, type="NaturalNumbers", nSites=n_sites)
+  
+  sequences.clamp(sequences)
+  
+  
+  
+  # MCMC 
+  
+  # initialize the model object 
+  
+  mymodel = model(Q)
+  
+  
+  #specify monitors and output files
+  
+  monitors.append(mnModel(filename="output/test.log",printgen=10))
+    
+  monitors.append( mnFile(filename="output/test.trees", printgen=10, psi) )
+  
+  monitors.append(mnScreen(printgen=10))
+  
+  
+  # mcmc sampling
+  
+  simulation_mcmc = mcmc(mymodel,monitors,moves)
+  
+  validation = validationAnalysis( simulation_mcmc, n_samples, "output/output_200" )
+  
+  q()
+  
